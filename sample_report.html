@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedInsight Health Report</title>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --surface2: #1a1a26;
+  --border: #2a2a3d;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --accent: #6366f1;
+  --radius: 12px;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--font); line-height: 1.6; padding: 24px; font-size: 14px; }
+/* Header */
+.report-header { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #0f0f1a, #1a1a2e); border: 1px solid #2a2a4d; border-radius: var(--radius); padding: 24px 32px; margin-bottom: 20px; }
+.logo { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.logo-icon { font-size: 28px; }
+.logo-text { font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #6366f1, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.header-sub { color: var(--text-muted); font-size: 12px; }
+.header-right { text-align: right; }
+.patient-name { font-size: 20px; font-weight: 700; color: white; }
+.patient-meta { color: #a78bfa; font-size: 13px; }
+.report-date, .report-file { color: var(--text-muted); font-size: 12px; }
+/* Sections */
+.section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 32px; margin-bottom: 20px; }
+.section-title { font-size: 18px; font-weight: 700; color: white; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+/* Executive Summary */
+.executive-summary { display: flex; gap: 40px; align-items: center; border: none; }
+.exec-left { flex: 1; }
+.exec-right { flex: 0 0 160px; text-align: center; }
+.patient-summary { color: var(--text); line-height: 1.8; margin-bottom: 20px; opacity: 0.9; }
+.stat-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.stat-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px 20px; text-align: center; min-width: 80px; }
+.stat-val { font-size: 28px; font-weight: 800; }
+.stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+/* Score Ring */
+.score-ring { width: 130px; height: 130px; border-radius: 50%; background: conic-gradient(var(--score-color) var(--score), #1e1e2e 0deg); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+.score-inner { width: 100px; height: 100px; border-radius: 50%; background: #0a0a14; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.score-num { font-size: 32px; font-weight: 900; line-height: 1; }
+.score-label { font-size: 11px; color: var(--text-muted); }
+.score-status { font-size: 10px; font-weight: 700; margin-top: 2px; }
+.score-desc { font-size: 12px; color: var(--text-muted); }
+/* Category blocks */
+.category-block { margin-bottom: 28px; }
+.category-title { font-size: 15px; font-weight: 600; color: #a78bfa; margin-bottom: 12px; }
+/* Results Table */
+.results-table { width: 100%; border-collapse: separate; border-spacing: 0 4px; }
+.results-table thead tr { background: var(--surface2); }
+.results-table th { padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); font-weight: 600; }
+.results-table td { padding: 10px 14px; }
+.results-table tr { border-radius: 8px; }
+.test-name { font-weight: 500; color: var(--text); }
+.test-value { font-weight: 700; font-size: 15px; }
+.ref-range { color: var(--text-muted); font-size: 12px; }
+/* Badges */
+.status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; }
+/* Findings Grid */
+.findings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.finding-card { border: 1px solid; border-radius: 10px; padding: 18px; }
+.finding-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.finding-test { font-weight: 700; font-size: 15px; color: white; }
+.finding-badges { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.severity-badge { font-size: 12px; font-weight: 600; }
+.finding-value { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
+.finding-interp { color: var(--text); font-size: 13px; line-height: 1.7; margin-bottom: 10px; }
+.finding-causes { margin-bottom: 10px; font-size: 12px; color: var(--text-muted); }
+.causes-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.cause-tag { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 2px 10px; font-size: 11px; color: var(--text-muted); }
+.finding-rec { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.25); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #a5b4fc; }
+/* Patterns */
+.patterns-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.pattern-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.pattern-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.pattern-name { font-weight: 700; color: white; font-size: 14px; }
+.urgency-badge { border: 1px solid; border-radius: 20px; padding: 2px 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+.pattern-tests { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+.pattern-significance { font-size: 13px; color: var(--text); line-height: 1.6; }
+/* Recommendations */
+.rec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.rec-subtitle { font-size: 14px; font-weight: 600; color: #a78bfa; margin-bottom: 12px; }
+.rec-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.rec-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 13px; line-height: 1.5; }
+/* Sources */
+.sources-section { background: rgba(99,102,241,0.05); border-color: rgba(99,102,241,0.2); }
+.sources-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.source-item { font-size: 12px; color: var(--text-muted); padding: 4px 0; word-break: break-all; }
+/* Disclaimer */
+.disclaimer-box { display: flex; gap: 16px; align-items: flex-start; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 20px; font-size: 13px; color: #fca5a5; line-height: 1.7; }
+.disclaimer-icon { font-size: 28px; flex-shrink: 0; }
+/* Footer */
+.report-footer { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 11px; padding: 16px 0; border-top: 1px solid var(--border); }
+@media (max-width: 700px) {
+  .executive-summary { flex-direction: column; }
+  .rec-grid { grid-template-columns: 1fr; }
+  .report-header { flex-direction: column; gap: 16px; text-align: center; }
+  .header-right { text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="report-header">
+  <div class="header-left">
+    <div class="logo">
+      <span class="logo-icon">🔬</span>
+      <span class="logo-text">MedInsight</span>
+    </div>
+    <div class="header-sub">AI-Powered Lab Report Analysis</div>
+  </div>
+  <div class="header-right">
+    <div class="patient-name">Test Patient</div>
+    <div class="patient-meta">Age 35 · Female</div>
+    <div class="report-date">Generated May 19, 2026 at 03:57 PM</div>
+    <div class="report-file">Source: sample_lab_report.pdf</div>
+  </div>
+</div>
+
+<div class="section executive-summary" style="background:linear-gradient(135deg, #1c1917, #713f12)">
+  <div class="exec-left">
+    <h2 class="section-title">Executive Summary</h2>
+    <p class="patient-summary">This patient shows several abnormal values including low hemoglobin, elevated TSH, and borderline lipid values.</p>
+    <div class="stat-row">
+            <div class="stat-card">
+              <div class="stat-val" style="color:#60a5fa">13</div>
+              <div class="stat-label">Total Tests</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val" style="color:#4ade80">1</div>
+              <div class="stat-label">Normal</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val" style="color:#fb923c">12</div>
+              <div class="stat-label">Abnormal</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val" style="color:#ef4444">0</div>
+              <div class="stat-label">Critical</div>
+            </div></div>
+  </div>
+  <div class="exec-right">
+    <div class="score-ring" style="--score:52deg; --score-color:#facc15">
+      <div class="score-inner">
+        <div class="score-num" style="color:#facc15">29</div>
+        <div class="score-label">/ 100</div>
+        <div class="score-status" style="color:#facc15">Attention Needed</div>
+      </div>
+    </div>
+    <div class="score-desc">Health Risk Score</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="section-title">📋 Lab Results</h2>
+  
+          <div class="category-block">
+            <h3 class="category-title">🩸 CBC</h3>
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th>Test</th><th>Your Value</th><th>Reference Range</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr style="background:#1e1a2e; border-left: 3px solid #a78bfa">
+                <td class="test-name">Hemoglobin</td>
+                <td class="test-value" style="color:#c4b5fd">10.2 g/dL</td>
+                <td class="ref-range">13.5 – 17.5 g/dL</td>
+                <td><span class="status-badge" style="background:#4c1d95; color:#c4b5fd">↓ LOW</span></td>
+              </tr>
+              <tr style="background:#2d1b0e; border-left: 3px solid #f97316">
+                <td class="test-name">White Blood Cell Count</td>
+                <td class="test-value" style="color:#fb923c">12.5 x</td>
+                <td class="ref-range">4.5 – 11.0 x10³/µL</td>
+                <td><span class="status-badge" style="background:#7c2d12; color:#fb923c">↑ HIGH</span></td>
+              </tr>
+              <tr style="background:#2d2a0d; border-left: 3px solid #eab308">
+                <td class="test-name">Platelet Count</td>
+                <td class="test-value" style="color:#facc15">148.0 x</td>
+                <td class="ref-range">150.0 – 400.0 x10³/µL</td>
+                <td><span class="status-badge" style="background:#713f12; color:#facc15">~ BORDERLINE</span></td>
+              </tr>
+              <tr style="background:#2d2a0d; border-left: 3px solid #eab308">
+                <td class="test-name">Mean Corpuscular Volume</td>
+                <td class="test-value" style="color:#facc15">72.0 fL</td>
+                <td class="ref-range">80.0 – 100.0 fL</td>
+                <td><span class="status-badge" style="background:#713f12; color:#facc15">~ BORDERLINE</span></td>
+              </tr></tbody>
+            </table>
+          </div>
+          <div class="category-block">
+            <h3 class="category-title">🦋 Thyroid</h3>
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th>Test</th><th>Your Value</th><th>Reference Range</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr style="background:#2d1b0e; border-left: 3px solid #f97316">
+                <td class="test-name">Thyroid Stimulating Hormone</td>
+                <td class="test-value" style="color:#fb923c">6.8 mIU/L</td>
+                <td class="ref-range">0.4 – 4.0 mIU/L</td>
+                <td><span class="status-badge" style="background:#7c2d12; color:#fb923c">↑ HIGH</span></td>
+              </tr></tbody>
+            </table>
+          </div>
+          <div class="category-block">
+            <h3 class="category-title">💊 Lipid</h3>
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th>Test</th><th>Your Value</th><th>Reference Range</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr style="background:#2d1b0e; border-left: 3px solid #f97316">
+                <td class="test-name">LDL Cholesterol</td>
+                <td class="test-value" style="color:#fb923c">145.0 mg/dL</td>
+                <td class="ref-range">0.0 – 100.0 mg/dL</td>
+                <td><span class="status-badge" style="background:#7c2d12; color:#fb923c">↑ HIGH</span></td>
+              </tr>
+              <tr style="background:#2d2a0d; border-left: 3px solid #eab308">
+                <td class="test-name">HDL Cholesterol</td>
+                <td class="test-value" style="color:#facc15">38.0 mg/dL</td>
+                <td class="ref-range">40.0 – 999.0 mg/dL</td>
+                <td><span class="status-badge" style="background:#713f12; color:#facc15">~ BORDERLINE</span></td>
+              </tr>
+              <tr style="background:#2d2a0d; border-left: 3px solid #eab308">
+                <td class="test-name">Total Cholesterol</td>
+                <td class="test-value" style="color:#facc15">210.0 mg/dL</td>
+                <td class="ref-range">0.0 – 200.0 mg/dL</td>
+                <td><span class="status-badge" style="background:#713f12; color:#facc15">~ BORDERLINE</span></td>
+              </tr>
+              <tr style="background:#2d1b0e; border-left: 3px solid #f97316">
+                <td class="test-name">Triglycerides</td>
+                <td class="test-value" style="color:#fb923c">185.0 mg/dL</td>
+                <td class="ref-range">0.0 – 150.0 mg/dL</td>
+                <td><span class="status-badge" style="background:#7c2d12; color:#fb923c">↑ HIGH</span></td>
+              </tr></tbody>
+            </table>
+          </div>
+          <div class="category-block">
+            <h3 class="category-title">🌿 Vitamins</h3>
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th>Test</th><th>Your Value</th><th>Reference Range</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr style="background:#1e1a2e; border-left: 3px solid #a78bfa">
+                <td class="test-name">25-Hydroxyvitamin D</td>
+                <td class="test-value" style="color:#c4b5fd">18.0 ng/mL</td>
+                <td class="ref-range">30.0 – 100.0 ng/mL</td>
+                <td><span class="status-badge" style="background:#4c1d95; color:#c4b5fd">↓ LOW</span></td>
+              </tr>
+              <tr style="background:#2d2a0d; border-left: 3px solid #eab308">
+                <td class="test-name">Vitamin B12</td>
+                <td class="test-value" style="color:#facc15">190.0 pg/mL</td>
+                <td class="ref-range">200.0 – 900.0 pg/mL</td>
+                <td><span class="status-badge" style="background:#713f12; color:#facc15">~ BORDERLINE</span></td>
+              </tr></tbody>
+            </table>
+          </div>
+          <div class="category-block">
+            <h3 class="category-title">⚗️ Metabolic</h3>
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th>Test</th><th>Your Value</th><th>Reference Range</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr style="background:#2d1b0e; border-left: 3px solid #f97316">
+                <td class="test-name">Fasting Blood Glucose</td>
+                <td class="test-value" style="color:#fb923c">112.0 mg/dL</td>
+                <td class="ref-range">70.0 – 99.0 mg/dL</td>
+                <td><span class="status-badge" style="background:#7c2d12; color:#fb923c">↑ HIGH</span></td>
+              </tr>
+              <tr style="background:#0d3320; border-left: 3px solid #22c55e">
+                <td class="test-name">Creatinine</td>
+                <td class="test-value" style="color:#4ade80">1.1 mg/dL</td>
+                <td class="ref-range">0.7 – 1.3 mg/dL</td>
+                <td><span class="status-badge" style="background:#166534; color:#4ade80">✓ NORMAL</span></td>
+              </tr></tbody>
+            </table>
+          </div>
+</div>
+
+<div class="section">
+  <h2 class="section-title">🤖 AI Diagnostic Findings</h2>
+  <div class="findings-grid">
+          <div class="finding-card" style="border-color:#a78bfa; background:#1e1a2e">
+            <div class="finding-header">
+              <div class="finding-test">Hemoglobin</div>
+              <div class="finding-badges">
+                <span class="status-badge" style="background:#4c1d95; color:#c4b5fd">LOW</span>
+                <span class="severity-badge" style="color:#facc15">● Moderate</span>
+              </div>
+            </div>
+            <div class="finding-value" style="color:#c4b5fd">10.2 g/dL</div>
+            <div class="finding-interp">Below normal range, may indicate anemia.</div>
+            <div class="finding-causes"><strong>Possible causes:</strong><div class="causes-row"><span class="cause-tag">Iron deficiency</span><span class="cause-tag">B12 deficiency</span><span class="cause-tag">Chronic disease</span></div></div>
+            <div class="finding-rec">💡 Consult physician for further evaluation and iron studies.</div>
+          </div>
+          <div class="finding-card" style="border-color:#f97316; background:#2d1b0e">
+            <div class="finding-header">
+              <div class="finding-test">TSH</div>
+              <div class="finding-badges">
+                <span class="status-badge" style="background:#7c2d12; color:#fb923c">HIGH</span>
+                <span class="severity-badge" style="color:#facc15">● Moderate</span>
+              </div>
+            </div>
+            <div class="finding-value" style="color:#fb923c">6.8 mIU/L</div>
+            <div class="finding-interp">Elevated TSH suggests hypothyroidism.</div>
+            <div class="finding-causes"><strong>Possible causes:</strong><div class="causes-row"><span class="cause-tag">Hashimoto thyroiditis</span><span class="cause-tag">Primary hypothyroidism</span></div></div>
+            <div class="finding-rec">💡 Endocrinologist referral recommended.</div>
+          </div></div>
+</div>
+
+<div class="section">
+  <h2 class="section-title">🔗 Clinical Patterns Identified</h2>
+  <div class="patterns-grid">
+          <div class="pattern-card">
+            <div class="pattern-header">
+              <div class="pattern-name">Possible Iron Deficiency Anemia</div>
+              <span class="urgency-badge" style="color:#facc15; border-color:#facc15">⏱ SOON</span>
+            </div>
+            <div class="pattern-tests">Tests: Hemoglobin, MCV</div>
+            <div class="pattern-significance">Low hemoglobin with low MCV suggests microcytic anemia, commonly caused by iron deficiency.</div>
+          </div></div>
+</div>
+
+<div class="section">
+  <h2 class="section-title">📝 Recommendations</h2>
+  <div class="rec-grid">
+    <div class='rec-col'><h3 class='rec-subtitle'>Lifestyle</h3><ul class='rec-list'><li class="rec-item lifestyle-item">🌱 Increase iron-rich food intake (red meat, spinach, lentils)</li><li class="rec-item lifestyle-item">🌱 Limit processed foods high in saturated fats</li><li class="rec-item lifestyle-item">🌱 30 minutes of moderate exercise 5 days per week</li></ul></div>
+    <div class='rec-col'><h3 class='rec-subtitle'>Follow-Up Actions</h3><ul class='rec-list'><li class="rec-item followup-item">🏥 See physician within 2 weeks to discuss thyroid function</li><li class="rec-item followup-item">🏥 Request full iron panel: serum iron, ferritin, TIBC</li><li class="rec-item followup-item">🏥 Repeat lipid panel in 3 months after lifestyle changes</li></ul></div>
+  </div>
+</div>
+
+<div class="section sources-section">
+  <h2 class="section-title">📚 Clinical Sources Referenced</h2>
+  <ul class="sources-list"><li class="source-item">🔗 Hypothyroidism — Mayo Clinic (mayoclinic.org)</li><li class="source-item">🔗 Iron Deficiency Anemia — MedlinePlus (medlineplus.gov)</li></ul>
+</div>
+
+<div class="disclaimer-box">
+  <span class="disclaimer-icon">⚕️</span>
+  <div>
+    <strong>Medical Disclaimer</strong><br>
+    This analysis is for informational purposes only and does not constitute medical advice. Always consult a qualified healthcare provider.
+  </div>
+</div>
+
+<div class="report-footer">
+  <span>MedInsight AI · Report generated May 19, 2026 at 03:57 PM</span>
+  <span>Powered by Claude AI + Clinical Reference Database</span>
+</div>
+</body>
+</html>

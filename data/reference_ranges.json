@@ -1,0 +1,98 @@
+{
+  "CBC": {
+    "WBC": {"min": 4.5, "max": 11.0, "unit": "x10³/µL", "critical_low": 2.0, "critical_high": 30.0, "full_name": "White Blood Cell Count"},
+    "RBC": {"min": 4.5, "max": 5.5, "unit": "x10⁶/µL", "critical_low": 2.0, "critical_high": 7.0, "full_name": "Red Blood Cell Count", "sex_specific": {"female": {"min": 4.0, "max": 5.2}}},
+    "Hemoglobin": {"min": 13.5, "max": 17.5, "unit": "g/dL", "critical_low": 7.0, "critical_high": 20.0, "full_name": "Hemoglobin", "sex_specific": {"female": {"min": 12.0, "max": 15.5}}},
+    "Hematocrit": {"min": 41.0, "max": 53.0, "unit": "%", "critical_low": 20.0, "critical_high": 60.0, "full_name": "Hematocrit", "sex_specific": {"female": {"min": 36.0, "max": 46.0}}},
+    "MCV": {"min": 80.0, "max": 100.0, "unit": "fL", "full_name": "Mean Corpuscular Volume"},
+    "MCH": {"min": 27.0, "max": 33.0, "unit": "pg", "full_name": "Mean Corpuscular Hemoglobin"},
+    "MCHC": {"min": 32.0, "max": 36.0, "unit": "g/dL", "full_name": "Mean Corpuscular Hemoglobin Concentration"},
+    "Platelets": {"min": 150.0, "max": 400.0, "unit": "x10³/µL", "critical_low": 50.0, "critical_high": 1000.0, "full_name": "Platelet Count"},
+    "Neutrophils": {"min": 45.0, "max": 75.0, "unit": "%", "full_name": "Neutrophils"},
+    "Lymphocytes": {"min": 20.0, "max": 45.0, "unit": "%", "full_name": "Lymphocytes"},
+    "Monocytes": {"min": 2.0, "max": 10.0, "unit": "%", "full_name": "Monocytes"},
+    "Eosinophils": {"min": 1.0, "max": 6.0, "unit": "%", "full_name": "Eosinophils"},
+    "Basophils": {"min": 0.0, "max": 1.0, "unit": "%", "full_name": "Basophils"}
+  },
+  "Metabolic": {
+    "Glucose": {"min": 70.0, "max": 99.0, "unit": "mg/dL", "critical_low": 40.0, "critical_high": 500.0, "full_name": "Fasting Blood Glucose"},
+    "BUN": {"min": 7.0, "max": 25.0, "unit": "mg/dL", "full_name": "Blood Urea Nitrogen"},
+    "Creatinine": {"min": 0.7, "max": 1.3, "unit": "mg/dL", "critical_high": 10.0, "full_name": "Creatinine", "sex_specific": {"female": {"min": 0.5, "max": 1.1}}},
+    "eGFR": {"min": 60.0, "max": 999.0, "unit": "mL/min/1.73m²", "critical_low": 15.0, "full_name": "Estimated Glomerular Filtration Rate"},
+    "Sodium": {"min": 136.0, "max": 145.0, "unit": "mEq/L", "critical_low": 120.0, "critical_high": 160.0, "full_name": "Sodium"},
+    "Potassium": {"min": 3.5, "max": 5.1, "unit": "mEq/L", "critical_low": 2.5, "critical_high": 6.5, "full_name": "Potassium"},
+    "Chloride": {"min": 98.0, "max": 107.0, "unit": "mEq/L", "full_name": "Chloride"},
+    "CO2": {"min": 22.0, "max": 29.0, "unit": "mEq/L", "full_name": "Carbon Dioxide (Bicarbonate)"},
+    "Calcium": {"min": 8.5, "max": 10.5, "unit": "mg/dL", "critical_low": 6.0, "critical_high": 14.0, "full_name": "Calcium"},
+    "Phosphorus": {"min": 2.5, "max": 4.5, "unit": "mg/dL", "full_name": "Phosphorus"},
+    "Magnesium": {"min": 1.7, "max": 2.2, "unit": "mg/dL", "full_name": "Magnesium"},
+    "Uric Acid": {"min": 3.5, "max": 7.2, "unit": "mg/dL", "full_name": "Uric Acid", "sex_specific": {"female": {"min": 2.6, "max": 6.0}}}
+  },
+  "Liver": {
+    "ALT": {"min": 7.0, "max": 56.0, "unit": "U/L", "critical_high": 1000.0, "full_name": "Alanine Aminotransferase"},
+    "AST": {"min": 10.0, "max": 40.0, "unit": "U/L", "critical_high": 1000.0, "full_name": "Aspartate Aminotransferase"},
+    "ALP": {"min": 44.0, "max": 147.0, "unit": "U/L", "full_name": "Alkaline Phosphatase"},
+    "GGT": {"min": 9.0, "max": 48.0, "unit": "U/L", "full_name": "Gamma-Glutamyl Transferase"},
+    "Total Bilirubin": {"min": 0.1, "max": 1.2, "unit": "mg/dL", "critical_high": 15.0, "full_name": "Total Bilirubin"},
+    "Direct Bilirubin": {"min": 0.0, "max": 0.3, "unit": "mg/dL", "full_name": "Direct Bilirubin"},
+    "Albumin": {"min": 3.5, "max": 5.0, "unit": "g/dL", "critical_low": 2.0, "full_name": "Albumin"},
+    "Total Protein": {"min": 6.3, "max": 8.2, "unit": "g/dL", "full_name": "Total Protein"}
+  },
+  "Lipid": {
+    "Total Cholesterol": {"min": 0.0, "max": 200.0, "unit": "mg/dL", "critical_high": 300.0, "full_name": "Total Cholesterol"},
+    "LDL": {"min": 0.0, "max": 100.0, "unit": "mg/dL", "critical_high": 190.0, "full_name": "LDL Cholesterol"},
+    "HDL": {"min": 40.0, "max": 999.0, "unit": "mg/dL", "critical_low": 20.0, "full_name": "HDL Cholesterol", "sex_specific": {"female": {"min": 50.0, "max": 999.0}}},
+    "Triglycerides": {"min": 0.0, "max": 150.0, "unit": "mg/dL", "critical_high": 1000.0, "full_name": "Triglycerides"},
+    "VLDL": {"min": 5.0, "max": 40.0, "unit": "mg/dL", "full_name": "VLDL Cholesterol"},
+    "Non-HDL Cholesterol": {"min": 0.0, "max": 130.0, "unit": "mg/dL", "full_name": "Non-HDL Cholesterol"}
+  },
+  "Thyroid": {
+    "TSH": {"min": 0.4, "max": 4.0, "unit": "mIU/L", "critical_low": 0.01, "critical_high": 10.0, "full_name": "Thyroid Stimulating Hormone"},
+    "Free T4": {"min": 0.8, "max": 1.8, "unit": "ng/dL", "full_name": "Free Thyroxine"},
+    "Free T3": {"min": 2.3, "max": 4.2, "unit": "pg/mL", "full_name": "Free Triiodothyronine"},
+    "T4 Total": {"min": 4.5, "max": 12.5, "unit": "µg/dL", "full_name": "Total Thyroxine"},
+    "T3 Total": {"min": 80.0, "max": 200.0, "unit": "ng/dL", "full_name": "Total Triiodothyronine"}
+  },
+  "Diabetes": {
+    "HbA1c": {"min": 0.0, "max": 5.6, "unit": "%", "critical_high": 14.0, "full_name": "Glycated Hemoglobin (HbA1c)"},
+    "Fasting Glucose": {"min": 70.0, "max": 99.0, "unit": "mg/dL", "critical_low": 40.0, "critical_high": 500.0, "full_name": "Fasting Glucose"},
+    "Postprandial Glucose": {"min": 0.0, "max": 140.0, "unit": "mg/dL", "critical_high": 500.0, "full_name": "2-Hour Postprandial Glucose"},
+    "Insulin (Fasting)": {"min": 2.0, "max": 25.0, "unit": "µIU/mL", "full_name": "Fasting Insulin"},
+    "C-Peptide": {"min": 0.8, "max": 3.85, "unit": "ng/mL", "full_name": "C-Peptide"}
+  },
+  "Vitamins": {
+    "Vitamin D": {"min": 30.0, "max": 100.0, "unit": "ng/mL", "critical_low": 10.0, "full_name": "25-Hydroxyvitamin D"},
+    "Vitamin B12": {"min": 200.0, "max": 900.0, "unit": "pg/mL", "critical_low": 100.0, "full_name": "Vitamin B12"},
+    "Folate": {"min": 2.7, "max": 17.0, "unit": "ng/mL", "full_name": "Folate (Folic Acid)"},
+    "Vitamin A": {"min": 30.0, "max": 80.0, "unit": "µg/dL", "full_name": "Vitamin A"},
+    "Vitamin E": {"min": 5.5, "max": 17.0, "unit": "mg/L", "full_name": "Vitamin E"}
+  },
+  "Iron": {
+    "Iron": {"min": 60.0, "max": 170.0, "unit": "µg/dL", "critical_low": 20.0, "full_name": "Serum Iron"},
+    "Ferritin": {"min": 12.0, "max": 300.0, "unit": "ng/mL", "critical_low": 5.0, "full_name": "Ferritin", "sex_specific": {"female": {"min": 12.0, "max": 150.0}}},
+    "TIBC": {"min": 250.0, "max": 370.0, "unit": "µg/dL", "full_name": "Total Iron Binding Capacity"},
+    "Transferrin Saturation": {"min": 20.0, "max": 50.0, "unit": "%", "full_name": "Transferrin Saturation"}
+  },
+  "Cardiac": {
+    "Troponin I": {"min": 0.0, "max": 0.04, "unit": "ng/mL", "critical_high": 2.0, "full_name": "Troponin I"},
+    "CK-MB": {"min": 0.0, "max": 5.0, "unit": "ng/mL", "full_name": "Creatine Kinase-MB"},
+    "BNP": {"min": 0.0, "max": 100.0, "unit": "pg/mL", "critical_high": 900.0, "full_name": "B-type Natriuretic Peptide"},
+    "CRP": {"min": 0.0, "max": 1.0, "unit": "mg/L", "full_name": "C-Reactive Protein"},
+    "hs-CRP": {"min": 0.0, "max": 3.0, "unit": "mg/L", "full_name": "High-Sensitivity CRP"},
+    "Homocysteine": {"min": 5.0, "max": 15.0, "unit": "µmol/L", "full_name": "Homocysteine"},
+    "ESR": {"min": 0.0, "max": 20.0, "unit": "mm/hr", "full_name": "Erythrocyte Sedimentation Rate", "sex_specific": {"female": {"min": 0.0, "max": 30.0}}}
+  },
+  "Hormones": {
+    "Testosterone": {"min": 300.0, "max": 1000.0, "unit": "ng/dL", "full_name": "Total Testosterone", "sex_specific": {"female": {"min": 15.0, "max": 70.0}}},
+    "Estradiol": {"min": 10.0, "max": 40.0, "unit": "pg/mL", "full_name": "Estradiol (male reference)", "sex_specific": {"female": {"min": 15.0, "max": 350.0}}},
+    "Cortisol (AM)": {"min": 6.2, "max": 19.4, "unit": "µg/dL", "critical_low": 2.0, "full_name": "Morning Cortisol"},
+    "DHEA-S": {"min": 80.0, "max": 560.0, "unit": "µg/dL", "full_name": "DHEA Sulfate", "sex_specific": {"female": {"min": 35.0, "max": 430.0}}},
+    "Prolactin": {"min": 2.0, "max": 18.0, "unit": "ng/mL", "full_name": "Prolactin", "sex_specific": {"female": {"min": 2.0, "max": 29.0}}}
+  },
+  "Urinalysis": {
+    "Urine pH": {"min": 4.5, "max": 8.0, "unit": "", "full_name": "Urine pH"},
+    "Urine Specific Gravity": {"min": 1.005, "max": 1.030, "unit": "", "full_name": "Urine Specific Gravity"},
+    "Urine Protein": {"min": 0.0, "max": 0.15, "unit": "g/day", "critical_high": 3.5, "full_name": "Urine Protein (24hr)"},
+    "Urine Creatinine": {"min": 500.0, "max": 2000.0, "unit": "mg/day", "full_name": "Urine Creatinine (24hr)"}
+  }
+}
