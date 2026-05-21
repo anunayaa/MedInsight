@@ -24,7 +24,7 @@ st.set_page_config(
     page_title="MedInsight — AI Lab Analyzer",
     page_icon="🔬",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
 # ─────────────────────────────────────────────
@@ -44,7 +44,8 @@ html, body, [class*="css"] {
 }
 
 /* Hide Streamlit branding */
-#MainMenu, footer, header { visibility: hidden; }
+#MainMenu, footer { visibility: hidden; }
+header { background-color: transparent !important; }
 .block-container { padding: 0 !important; max-width: 100% !important; }
 
 /* ── Hero Header ── */
@@ -75,7 +76,8 @@ html, body, [class*="css"] {
 }
 .hero-tagline {
     color: #94a3b8; font-size: 16px; font-weight: 400;
-    max-width: 560px; margin: 0 auto 20px; position: relative;
+    max-width: 680px; margin: 0 auto 20px !important; position: relative;
+    text-align: center !important;
 }
 .hero-badges {
     display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
@@ -245,6 +247,141 @@ div[data-testid="stFileUploader"] {
 
 /* ── Spinner override ── */
 .stSpinner > div { border-top-color: #6366f1 !important; }
+
+/* ── Chat Section ── */
+.chat-section {
+    background: linear-gradient(135deg, #0d0d1f, #12122b);
+    border: 1px solid #1e1e3a; border-radius: 20px;
+    padding: 28px 32px; margin-top: 32px;
+}
+.chat-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px; padding-bottom: 16px;
+    border-bottom: 1px solid #1e1e3a;
+}
+.chat-header-icon { font-size: 28px; }
+.chat-header-title {
+    font-size: 18px; font-weight: 700; color: white;
+}
+.chat-header-sub {
+    font-size: 12px; color: #64748b; margin-top: 2px;
+}
+.chat-messages {
+    max-height: 500px; overflow-y: auto;
+    padding: 8px 0; margin-bottom: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #2d2d5a transparent;
+}
+.chat-msg {
+    display: flex; gap: 12px; margin-bottom: 16px;
+    animation: fadeInMsg 0.3s ease;
+}
+.chat-msg.user { flex-direction: row-reverse; }
+.chat-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+}
+.chat-msg.user .chat-avatar {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+}
+.chat-msg.assistant .chat-avatar {
+    background: linear-gradient(135deg, #059669, #10b981);
+}
+.chat-bubble {
+    max-width: 75%; padding: 14px 18px;
+    border-radius: 16px; font-size: 14px;
+    line-height: 1.7; color: #e2e8f0;
+}
+.chat-msg.user .chat-bubble {
+    background: linear-gradient(135deg, #1e1b4b, #312e81);
+    border: 1px solid #3730a3;
+    border-top-right-radius: 4px;
+}
+.chat-msg.assistant .chat-bubble {
+    background: #0f1a1a;
+    border: 1px solid #1a3a2a;
+    border-top-left-radius: 4px;
+}
+.chat-bubble p { margin: 0 0 8px; }
+.chat-bubble p:last-child { margin-bottom: 0; }
+.chat-bubble strong { color: #a5b4fc; }
+.chat-bubble ul, .chat-bubble ol {
+    margin: 4px 0 8px 16px; padding: 0;
+}
+.chat-bubble li { margin-bottom: 4px; }
+.chat-hint {
+    text-align: center; color: #4a4a6a;
+    font-size: 13px; padding: 24px 0;
+    font-style: italic;
+}
+@keyframes fadeInMsg {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Sidebar Styles ── */
+[data-testid="stSidebar"] {
+    background: #0a0a14 !important;
+    border-right: 1px solid #1e1e3a !important;
+}
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
+    color: #e2e8f0 !important;
+}
+.sidebar-title {
+    font-size: 18px; font-weight: 800;
+    background: linear-gradient(135deg, #818cf8, #6ee7b7);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 4px;
+}
+.sidebar-sub { color: #64748b; font-size: 12px; margin-bottom: 20px; }
+.history-card {
+    background: #12121a; border: 1px solid #1e1e3a;
+    border-radius: 12px; padding: 14px 16px;
+    margin-bottom: 8px; cursor: pointer;
+    transition: all 0.2s ease;
+}
+.history-card:hover {
+    border-color: #4f46e5;
+    background: #16162a;
+}
+.history-card.active {
+    border-color: #6366f1;
+    background: rgba(99,102,241,0.1);
+}
+.history-filename {
+    font-size: 13px; font-weight: 600; color: #e2e8f0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.history-meta {
+    font-size: 11px; color: #64748b; margin-top: 4px;
+}
+.history-badge {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 10px; font-size: 10px; font-weight: 700;
+    margin-top: 6px;
+}
+
+/* ── Sidebar Toggle Button Overrides ── */
+.sidebar-toggle-wrapper .stButton > button {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #94a3b8 !important;
+    box-shadow: none !important;
+    padding: 8px 16px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    border-radius: 10px !important;
+    width: auto !important;
+    min-height: unset !important;
+    height: auto !important;
+}
+.sidebar-toggle-wrapper .stButton > button:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: #4f46e5 !important;
+    color: white !important;
+    transform: none !important;
+}
 </style>
 """
 
@@ -298,6 +435,11 @@ def init_state():
         "error": None,
         "logs": [],
         "pipeline_done": set(),
+        # Chat state
+        "chat_messages": [],       # list of {"role": "user"|"assistant", "content": str}
+        "chat_history": [],        # Gemini Content objects for multi-turn
+        "active_report_context": None,  # report context dict for chatbot
+        "active_report_id": None,  # ID of the currently loaded report
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -310,7 +452,8 @@ def add_log(msg: str, kind: str = "info"):
 
 def reset_state():
     for k in ["report_html", "comparison_results", "ai_findings", "ocr_result",
-              "processing", "error", "logs", "pipeline_done"]:
+              "processing", "error", "logs", "pipeline_done",
+              "chat_messages", "chat_history", "active_report_context", "active_report_id"]:
         if k in st.session_state:
             del st.session_state[k]
     init_state()
@@ -325,6 +468,9 @@ def main():
     # Inject global CSS
     st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
 
+    # ── Sidebar: Report History ──
+    _render_sidebar()
+
     # ── Hero Header ──
     st.markdown("""
     <div class="medinsight-hero">
@@ -332,11 +478,10 @@ def main():
         <span class="hero-icon">🔬</span>
         <span class="hero-title">MedInsight</span>
       </div>
-      <p class="hero-tagline">Upload your lab report and get an AI-powered diagnostic analysis with clinical insights, reference comparisons, and personalized recommendations.</p>
+      <p class="hero-tagline">Upload your lab report and get an AI-powered diagnostic analysis with clinical insights, reference comparisons, and personalized recommendations</p>
       <div class="hero-badges">
         <span class="hero-badge">🤖 Claude AI</span>
         <span class="hero-badge">🔍 Web Search</span>
-        <span class="hero-badge">📋 50+ Biomarkers</span>
         <span class="hero-badge">📊 Clinical Reference Ranges</span>
         <span class="hero-badge">🔒 Private & Local</span>
       </div>
@@ -402,7 +547,6 @@ def main():
             """, unsafe_allow_html=True)
 
     with col2:
-        st.markdown('<div class="patient-form">', unsafe_allow_html=True)
         st.markdown('<div class="form-title">👤 Patient Information (Optional)</div>', unsafe_allow_html=True)
         patient_name = st.text_input("Full Name", placeholder="e.g., Jane Smith", key="pt_name")
         c1, c2 = st.columns(2)
@@ -411,7 +555,6 @@ def main():
                                            placeholder="–", key="pt_age", step=1)
         with c2:
             patient_sex = st.selectbox("Biological Sex", ["Unknown", "Male", "Female"], key="pt_sex")
-        st.markdown('</div>', unsafe_allow_html=True)
 
     # ── Analyze Button ──
     st.markdown("<div style='margin-top:8px;'>", unsafe_allow_html=True)
@@ -534,6 +677,32 @@ def main():
             update_ui(4, "Report ready! ✅", "success")
             time.sleep(0.5)
 
+            # ── Auto-save to history ──
+            try:
+                from modules.report_history import ReportHistoryManager
+                history_mgr = ReportHistoryManager()
+                report_id = history_mgr.save_report(
+                    filename=filename,
+                    patient_info=patient_info,
+                    ocr_text=ocr_result.get("raw_text", ""),
+                    comparison_results=comparison_results,
+                    ai_findings=ai_findings,
+                )
+                # Set up chat context — ocr_text stored at 500 chars only (not injected
+                # into prompts, kept solely as a lightweight fallback reference)
+                st.session_state.active_report_id = report_id
+                st.session_state.active_report_context = {
+                    "patient_info": patient_info,
+                    "comparison_results": comparison_results,
+                    "ai_findings": ai_findings,
+                    "ocr_text": ocr_result.get("raw_text", "")[:500],
+                }
+                st.session_state.chat_messages = []
+                st.session_state.chat_history = []
+                add_log(f"Report saved to history (ID: {report_id})", "success")
+            except Exception as hist_err:
+                logger.warning(f"Failed to save report to history: {hist_err}")
+
         except Exception as e:
             logger.exception("Pipeline error")
             st.session_state.error = str(e)
@@ -606,33 +775,221 @@ def main():
         st.markdown("</div>", unsafe_allow_html=True)
 
     elif not st.session_state.processing and not st.session_state.report_html:
-        # ── Empty state / How it works ──
-        st.markdown("""
-        <div style="margin-top:32px;">
-          <div style="text-align:center;margin-bottom:32px;">
-            <h3 style="color:#64748b;font-weight:500;font-size:15px;">HOW IT WORKS</h3>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;">
-        """, unsafe_allow_html=True)
+        pass
 
-        steps_info = [
-            ("📂", "Upload", "Drop a PDF or image of your lab report — blood tests, metabolic panels, thyroid, and more."),
-            ("🔍", "OCR", "PyMuPDF extracts text from PDFs. Tesseract handles scanned images automatically."),
-            ("🤖", "AI Agent", "Claude AI reads your results and uses web search to pull real clinical guidelines."),
-            ("📊", "Compare", "Each value is compared to clinical reference ranges and classified as normal, borderline, or critical."),
-            ("📄", "Report", "A detailed, color-coded health report with findings, patterns, and recommendations."),
-        ]
-        cards = ""
-        for icon, title, desc in steps_info:
-            cards += f"""
-            <div style="background:#0f0f1e;border:1px solid #1e1e3a;border-radius:14px;padding:24px;text-align:center;">
-              <div style="font-size:36px;margin-bottom:12px;">{icon}</div>
-              <div style="font-weight:700;color:white;margin-bottom:8px;">{title}</div>
-              <div style="font-size:12px;color:#64748b;line-height:1.6;">{desc}</div>
-            </div>"""
-        st.markdown(cards + "</div></div>", unsafe_allow_html=True)
+    # ── Chat Section (always visible) ──
+    _render_chat_section()
 
     st.markdown("</div>", unsafe_allow_html=True)  # close main-container
+
+
+# ─────────────────────────────────────────────
+# Sidebar: Report History
+# ─────────────────────────────────────────────
+def _render_sidebar():
+    """Render the sidebar with report history."""
+    with st.sidebar:
+
+        # How It Works Expander
+        with st.sidebar.expander("ℹ️ How It Works", expanded=False):
+            st.markdown("""
+            <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px;">
+                <div style="background:#12121a; border:1px solid #1e1e3a; border-radius:10px; padding:12px; text-align:left;">
+                    <div style="font-size:20px; margin-bottom:4px;">📂</div>
+                    <div style="font-weight:700; color:white; font-size:13px; margin-bottom:2px;">1. Upload</div>
+                    <div style="font-size:11px; color:#64748b; line-height:1.4;">Drop a PDF or image of your lab report.</div>
+                </div>
+                <div style="background:#12121a; border:1px solid #1e1e3a; border-radius:10px; padding:12px; text-align:left;">
+                    <div style="font-size:20px; margin-bottom:4px;">🔍</div>
+                    <div style="font-weight:700; color:white; font-size:13px; margin-bottom:2px;">2. OCR</div>
+                    <div style="font-size:11px; color:#64748b; line-height:1.4;">PyMuPDF and Tesseract extract text automatically.</div>
+                </div>
+                <div style="background:#12121a; border:1px solid #1e1e3a; border-radius:10px; padding:12px; text-align:left;">
+                    <div style="font-size:20px; margin-bottom:4px;">🤖</div>
+                    <div style="font-weight:700; color:white; font-size:13px; margin-bottom:2px;">3. AI Agent</div>
+                    <div style="font-size:11px; color:#64748b; line-height:1.4;">Claude AI reads results and searches clinical guidelines.</div>
+                </div>
+                <div style="background:#12121a; border:1px solid #1e1e3a; border-radius:10px; padding:12px; text-align:left;">
+                    <div style="font-size:20px; margin-bottom:4px;">📊</div>
+                    <div style="font-weight:700; color:white; font-size:13px; margin-bottom:2px;">4. Compare</div>
+                    <div style="font-size:11px; color:#64748b; line-height:1.4;">Values compared to clinical reference ranges.</div>
+                </div>
+                <div style="background:#12121a; border:1px solid #1e1e3a; border-radius:10px; padding:12px; text-align:left;">
+                    <div style="font-size:20px; margin-bottom:4px;">📄</div>
+                    <div style="font-weight:700; color:white; font-size:13px; margin-bottom:2px;">5. Report</div>
+                    <div style="font-size:11px; color:#64748b; line-height:1.4;">Detailed, color-coded health report is generated.</div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        st.markdown('<hr style="border-color:#1e1e3a;margin:16px 0;">', unsafe_allow_html=True)
+        st.markdown('<div class="sidebar-title">📋 Report History</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sidebar-sub">Your past analyzed reports</div>', unsafe_allow_html=True)
+
+        try:
+            from modules.report_history import ReportHistoryManager
+            history_mgr = ReportHistoryManager()
+            reports = history_mgr.list_reports()
+        except Exception:
+            reports = []
+
+        if not reports:
+            st.markdown(
+                '<div style="text-align:center;color:#4a4a6a;font-size:13px;'
+                'padding:24px 0;font-style:italic;">No reports yet.<br>'
+                'Analyze a lab report to see it here.</div>',
+                unsafe_allow_html=True,
+            )
+            return
+
+        for report in reports:
+            rid = report["id"]
+            fname = report.get("filename", "Unknown")
+            ts = report.get("timestamp", "")
+            csummary = report.get("comparison_summary", {})
+            status = csummary.get("overall_status", "Unknown")
+            score = csummary.get("severity_score", 0)
+            abnormal = csummary.get("abnormal_count", 0)
+
+            # Format date
+            try:
+                from datetime import datetime
+                dt = datetime.fromisoformat(ts)
+                date_str = dt.strftime("%b %d, %Y · %I:%M %p")
+            except Exception:
+                date_str = ts[:16] if ts else "Unknown date"
+
+            # Badge color
+            badge_colors = {
+                "Excellent": ("#052e16", "#4ade80"),
+                "Good": ("#052e16", "#4ade80"),
+                "Attention Needed": ("#2d2a0d", "#facc15"),
+                "Concerning": ("#2d1b0e", "#fb923c"),
+                "Critical": ("#2d0a0a", "#f87171"),
+            }
+            bg, fg = badge_colors.get(status, ("#1e1e3a", "#94a3b8"))
+            is_active = st.session_state.get("active_report_id") == rid
+            card_class = "history-card active" if is_active else "history-card"
+
+            st.markdown(f"""
+            <div class="{card_class}">
+              <div class="history-filename">📄 {fname}</div>
+              <div class="history-meta">{date_str} · {abnormal} abnormal</div>
+              <span class="history-badge" style="background:{bg};color:{fg}">{status} · {score}/100</span>
+            </div>
+            """, unsafe_allow_html=True)
+
+            col_load, col_del = st.columns([3, 1])
+            with col_load:
+                if st.button("💬 Chat", key=f"load_{rid}", use_container_width=True):
+                    _load_report_for_chat(rid)
+                    st.rerun()
+            with col_del:
+                if st.button("🗑️", key=f"del_{rid}", use_container_width=True):
+                    try:
+                        history_mgr.delete_report(rid)
+                        if st.session_state.get("active_report_id") == rid:
+                            st.session_state.active_report_id = None
+                            st.session_state.active_report_context = None
+                            st.session_state.chat_messages = []
+                            st.session_state.chat_history = []
+                    except Exception:
+                        pass
+                    st.rerun()
+
+
+def _load_report_for_chat(report_id: str):
+    """Load a historical report's context into the chatbot.
+
+    ocr_text is capped at 500 chars — it is stored as a lightweight reference
+    only and is not injected into chat prompts (see medical_chat.py).
+    """
+    try:
+        from modules.report_history import ReportHistoryManager
+        history_mgr = ReportHistoryManager()
+        context = history_mgr.get_report_context(report_id)
+        if context:
+            # Trim ocr_text down in case the history manager returns the full string
+            if "ocr_text" in context:
+                context["ocr_text"] = context["ocr_text"][:500]
+            st.session_state.active_report_context = context
+            st.session_state.active_report_id = report_id
+            st.session_state.chat_messages = []
+            st.session_state.chat_history = []
+    except Exception as e:
+        logger.warning(f"Failed to load report {report_id}: {e}")
+
+
+# ─────────────────────────────────────────────
+# Chat Section
+# ─────────────────────────────────────────────
+def _render_chat_section():
+    """Render the interactive chat section."""
+    has_context = st.session_state.get("active_report_context") is not None
+
+    st.markdown(f"""
+    <div class="chat-section">
+      <div class="chat-header">
+        <span class="chat-header-icon">💬</span>
+        <div>
+          <div class="chat-header-title">MedInsight Chat</div>
+          <div class="chat-header-sub">{'Report loaded — ask about your results' if has_context else 'Ask any health or medical question'}</div>
+        </div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Display chat messages ──
+    messages = st.session_state.get("chat_messages", [])
+
+    if not messages and not has_context:
+        st.markdown(
+            '<div class="chat-hint">💡 Upload and analyze a lab report to get '
+            'personalized answers, or ask any general health question below.</div>',
+            unsafe_allow_html=True,
+        )
+    elif not messages and has_context:
+        st.markdown(
+            '<div class="chat-hint">✅ Report loaded! Ask me anything about your '
+            'results — e.g., "What does my high TSH mean?" or "Should I worry '
+            'about my cholesterol?"</div>',
+            unsafe_allow_html=True,
+        )
+
+    # Render existing messages using Streamlit's native chat elements
+    for msg in messages:
+        with st.chat_message(msg["role"], avatar="🧑‍💻" if msg["role"] == "user" else "🔬"):
+            st.markdown(msg["content"])
+
+    # ── Chat input ──
+    if prompt := st.chat_input("Ask about your lab results or any health question...", key="chat_input"):
+        # Add user message
+        st.session_state.chat_messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user", avatar="🧑‍💻"):
+            st.markdown(prompt)
+
+        # Get response from chat engine
+        with st.chat_message("assistant", avatar="🔬"):
+            with st.spinner("Thinking..."):
+                try:
+                    from modules.medical_chat import MedicalChatEngine
+                    engine = MedicalChatEngine()
+                    response, updated_history = engine.chat(
+                        user_message=prompt,
+                        report_context=st.session_state.get("active_report_context"),
+                        chat_history=st.session_state.get("chat_history", []),
+                    )
+                    st.session_state.chat_history = updated_history
+                    st.session_state.chat_messages.append(
+                        {"role": "assistant", "content": response}
+                    )
+                    st.markdown(response)
+                except Exception as e:
+                    error_msg = f"Sorry, I encountered an error: {str(e)}"
+                    st.session_state.chat_messages.append(
+                        {"role": "assistant", "content": error_msg}
+                    )
+                    st.markdown(error_msg)
 
 
 if __name__ == "__main__":

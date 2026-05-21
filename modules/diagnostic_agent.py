@@ -74,7 +74,7 @@ SYSTEM_PROMPT = """You are MedInsight, an expert AI medical diagnostic assistant
 Your role:
 1. Identify all abnormal values and explain their clinical significance
 2. Identify patterns across multiple abnormal values that suggest underlying conditions
-3. Use web_search to look up relevant clinical guidelines and context for flagged values
+3. Use web_search to look up relevant clinical guidelines for flagged values — limit to 1-2 searches total, only for the most clinically significant findings
 4. Use lookup_reference_range to verify reference ranges when uncertain
 5. Provide clear, evidence-based interpretations and actionable recommendations
 
@@ -135,7 +135,6 @@ class DiagnosticAgent:
         user_message = self._build_user_message(ocr_text, comparison_results, patient_info)
         searched_sources: List[str] = []
 
-        # Build conversation history
         contents: List[types.Content] = [
             types.Content(role="user", parts=[types.Part(text=user_message)])
         ]
@@ -146,33 +145,30 @@ class DiagnosticAgent:
         )
 
         try:
-            for _ in range(10):  # max tool-use rounds
+            # Capped at 4 rounds (was 10) — reduces worst-case token usage by ~60%
+            for _ in range(4):
                 response = self.client.models.generate_content(
                     model=MODEL,
                     contents=contents,
                     config=config,
                 )
 
-                # Add model response to history
                 contents.append(
                     types.Content(role="model", parts=response.candidates[0].content.parts)
                 )
 
-                # Check for function calls
                 fn_calls = [
                     p for p in response.candidates[0].content.parts
                     if p.function_call is not None
                 ]
 
                 if not fn_calls:
-                    # No more tool calls — extract final text
                     final_text = "".join(
                         p.text for p in response.candidates[0].content.parts
                         if hasattr(p, "text") and p.text
                     )
                     return self._parse_response(final_text, searched_sources)
 
-                # Execute function calls and add results
                 fn_response_parts = []
                 for part in fn_calls:
                     fc = part.function_call
@@ -195,6 +191,16 @@ class DiagnosticAgent:
 
         except Exception as e:
             logger.exception("Gemini diagnostic agent failed")
+            err_str = str(e)
+            if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
+                msg = (
+                    "API Rate Limit Exceeded (429 Resource Exhausted): "
+                    "You have hit the Gemini Free Tier rate limit (15 requests per minute). "
+                    "Since our AI agent performs multiple database and clinical web search iterations to generate a premium diagnostic report, "
+                    "it is very easy to exceed this rate limit window.\n\n"
+                    "Please wait 30–60 seconds and try again. Alternatively, switch to a Pay-As-You-Go plan in Google AI Studio to lift this limit completely."
+                )
+                return self._error_response(msg)
             return self._error_response(str(e))
 
     # ─────────────────────────────────────────────
@@ -221,7 +227,9 @@ class DiagnosticAgent:
             results_text = f"Search results for '{query}':\n\n"
             sources = []
             for r in response.get("results", []):
-                results_text += f"**{r.get('title', '')}** ({r.get('url', '')})\n{r.get('content', '')}\n\n"
+                # Cap each result body at 400 chars (was uncapped — saves ~300-600 tokens/search)
+                content_snippet = (r.get("content") or "")[:400]
+                results_text += f"**{r.get('title', '')}**\n{content_snippet}\n\n"
                 if r.get("url"):
                     sources.append(f"{r.get('title', '')} — {r.get('url', '')}")
             return results_text.strip(), sources
@@ -256,7 +264,12 @@ class DiagnosticAgent:
                 patient_str = "**Patient:** " + " | ".join(parts) + "\n\n"
 
         summary = comparison_results.get("summary", {})
-        abnormal_only = [r for r in comparison_results.get("results", []) if r.get("status", "NORMAL") != "NORMAL"]
+
+        # Only include actionable abnormals (exclude BORDERLINE) to reduce prompt size
+        abnormal_only = [
+            r for r in comparison_results.get("results", [])
+            if r.get("status", "NORMAL") not in ("NORMAL", "BORDERLINE")
+        ]
         abnormal_str = ""
         if abnormal_only:
             abnormal_str = "\n**Flagged Values:**\n"
@@ -268,12 +281,14 @@ class DiagnosticAgent:
 
         return (
             f"{patient_str}"
-            f"**Lab Report (OCR Extracted):**\n```\n{ocr_text[:3000]}\n```\n\n"
+            # OCR text capped at 1,500 chars (was 3,000) — abnormals list above gives
+            # the model the key data; raw text is a fallback for context only
+            f"**Lab Report (OCR Extracted):**\n```\n{ocr_text[:1500]}\n```\n\n"
             f"{abnormal_str}\n"
             f"**Severity Score:** {summary.get('severity_score', 'N/A')}/100 "
             f"- {summary.get('overall_status', 'Unknown')}\n\n"
-            "Analyze this lab report thoroughly. Use web_search for clinical context "
-            "on any abnormal findings. Return your analysis as the specified JSON format."
+            "Analyze this lab report thoroughly. Use web_search only for the most significant "
+            "abnormal findings (1-2 searches max). Return your analysis as the specified JSON format."
         )
 
     @staticmethod
