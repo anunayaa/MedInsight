@@ -1,5 +1,179 @@
 [
   {
+    "id": "a2dde874",
+    "timestamp": "2026-05-22T10:38:04.883749",
+    "filename": "GNU_Health_lab_report_sample.png",
+    "patient_info": {
+      "name": "Patient",
+      "age": "",
+      "sex": "unknown"
+    },
+    "ocr_text": "GNU Solidario Hospital\nAutovia del Norte 12485 i \u2018\nLas Palmas de Gran Canaria\nSpain\nName Ana Betz Patient ID PACOO1\nDate 2011-08-25 08:32 Age 25y 10m 26d Sex Female\nDoctor Cameron Cordara Test id B165AAF4\nCOMPLETE BLOOD COUNT\nTest Name Result Normal Range Units\nHemoglobin 12 11.0 - 16.0 g/dl\nRBC 3.3 3.5-5.50 10% 6/uL\nHCT 36 37.0-50.0 %\nMCV 83 82-95 fl\nMCH 28 27-31 pg\nMCHC 33 32.0-36.0 g/dL\nRDW-CV 12 11.5-14.5 %\nRDW-SD 44 35-56 fl\nWBC 6.7 45-11 10% 3/uL\nNEU% 60 40-70 %\nLYM% 30 20-45 %\nMON% 8 2-10 %\nEOS% 2 1-6 %\nBAS% (0) 0-2 %\nLYM# 2 1.5-4.0 10% 3/uL\nGRA# 4.7 2.0-7.5 10% 3/uL\nPLT 256 150-450 10% 3/uL\nESR 2 Up to 15 mm/br\nDigitally signed by\nDr. Cameron Cordara\nGNU Public Key : E44311F4\nTest id : BL6ESAAF4",
+    "comparison_summary": {
+      "total_tests": 7,
+      "abnormal_count": 2,
+      "critical_count": 0,
+      "severity_score": 12,
+      "overall_status": "Good"
+    },
+    "comparison_results_full": {
+      "results": [
+        {
+          "name": "Hemoglobin",
+          "full_name": "Hemoglobin",
+          "category": "CBC",
+          "value": 12.0,
+          "unit": "g/dL",
+          "ref_min": 13.5,
+          "ref_max": 17.5,
+          "ref_unit": "g/dL",
+          "status": "LOW",
+          "severity": 25,
+          "critical_low": 7.0,
+          "critical_high": 20.0
+        },
+        {
+          "name": "RBC",
+          "full_name": "Red Blood Cell Count",
+          "category": "CBC",
+          "value": 3.3,
+          "unit": "x10\u2076/\u00b5L",
+          "ref_min": 4.5,
+          "ref_max": 5.5,
+          "ref_unit": "x10\u2076/\u00b5L",
+          "status": "LOW",
+          "severity": 25,
+          "critical_low": 2.0,
+          "critical_high": 7.0
+        },
+        {
+          "name": "MCV",
+          "full_name": "Mean Corpuscular Volume",
+          "category": "CBC",
+          "value": 83.0,
+          "unit": "fL",
+          "ref_min": 80.0,
+          "ref_max": 100.0,
+          "ref_unit": "fL",
+          "status": "NORMAL",
+          "severity": 0,
+          "critical_low": null,
+          "critical_high": null
+        },
+        {
+          "name": "MCH",
+          "full_name": "Mean Corpuscular Hemoglobin",
+          "category": "CBC",
+          "value": 28.0,
+          "unit": "pg",
+          "ref_min": 27.0,
+          "ref_max": 33.0,
+          "ref_unit": "pg",
+          "status": "NORMAL",
+          "severity": 0,
+          "critical_low": null,
+          "critical_high": null
+        },
+        {
+          "name": "MCHC",
+          "full_name": "Mean Corpuscular Hemoglobin Concentration",
+          "category": "CBC",
+          "value": 33.0,
+          "unit": "g/dL",
+          "ref_min": 32.0,
+          "ref_max": 36.0,
+          "ref_unit": "g/dL",
+          "status": "NORMAL",
+          "severity": 0,
+          "critical_low": null,
+          "critical_high": null
+        },
+        {
+          "name": "WBC",
+          "full_name": "White Blood Cell Count",
+          "category": "CBC",
+          "value": 6.7,
+          "unit": "x10\u00b3/\u00b5L",
+          "ref_min": 4.5,
+          "ref_max": 11.0,
+          "ref_unit": "x10\u00b3/\u00b5L",
+          "status": "NORMAL",
+          "severity": 0,
+          "critical_low": 2.0,
+          "critical_high": 30.0
+        },
+        {
+          "name": "ESR",
+          "full_name": "Erythrocyte Sedimentation Rate",
+          "category": "Cardiac",
+          "value": 2.0,
+          "unit": "Up to",
+          "ref_min": 0.0,
+          "ref_max": 20.0,
+          "ref_unit": "mm/hr",
+          "status": "NORMAL",
+          "severity": 0,
+          "critical_low": null,
+          "critical_high": null
+        }
+      ],
+      "summary": {
+        "total_tests": 7,
+        "counts": {
+          "NORMAL": 5,
+          "BORDERLINE": 0,
+          "LOW": 2,
+          "HIGH": 0,
+          "CRITICAL LOW": 0,
+          "CRITICAL HIGH": 0
+        },
+        "abnormal_count": 2,
+        "critical_count": 0,
+        "abnormal_tests": [
+          {
+            "name": "Hemoglobin",
+            "full_name": "Hemoglobin",
+            "category": "CBC",
+            "value": 12.0,
+            "unit": "g/dL",
+            "ref_min": 13.5,
+            "ref_max": 17.5,
+            "ref_unit": "g/dL",
+            "status": "LOW",
+            "severity": 25,
+            "critical_low": 7.0,
+            "critical_high": 20.0
+          },
+          {
+            "name": "RBC",
+            "full_name": "Red Blood Cell Count",
+            "category": "CBC",
+            "value": 3.3,
+            "unit": "x10\u2076/\u00b5L",
+            "ref_min": 4.5,
+            "ref_max": 5.5,
+            "ref_unit": "x10\u2076/\u00b5L",
+            "status": "LOW",
+            "severity": 25,
+            "critical_low": 2.0,
+            "critical_high": 7.0
+          }
+        ],
+        "critical_tests": [],
+        "overall_status": "Good",
+        "severity_score": 12
+      }
+    },
+    "ai_findings": {
+      "patient_summary": "Analysis failed.",
+      "overall_assessment": "API Rate Limit Exceeded (429 Resource Exhausted): You have hit the Gemini Free Tier rate limit (15 requests per minute). Since our AI agent performs multiple database and clinical web search iterations to generate a premium diagnostic report, it is very easy to exceed this rate limit window.\n\nPlease wait 30\u201360 seconds and try again. Alternatively, switch to a Pay-As-You-Go plan in Google AI Studio to lift this limit completely.",
+      "findings": [],
+      "patterns_identified": [],
+      "lifestyle_recommendations": [],
+      "follow_up_recommendations": []
+    }
+  },
+  {
     "id": "435aabbd",
     "timestamp": "2026-05-21T15:30:21.204859",
     "filename": "33806e7015fbfcaff211.png",
