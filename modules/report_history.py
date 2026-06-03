@@ -51,6 +51,8 @@ class ReportHistoryManager:
         ocr_text: str,
         comparison_results: Dict,
         ai_findings: Dict,
+        location_data: Optional[Dict] = None,
+        nearby_facilities: Optional[Dict] = None,
     ) -> str:
         """
         Save a new report to history.
@@ -87,6 +89,8 @@ class ReportHistoryManager:
                 "lifestyle_recommendations": ai_findings.get("lifestyle_recommendations", []),
                 "follow_up_recommendations": ai_findings.get("follow_up_recommendations", []),
             },
+            "location_data": location_data,
+            "nearby_facilities": nearby_facilities,
         }
 
         reports.insert(0, record)  # newest first
@@ -133,7 +137,7 @@ class ReportHistoryManager:
         """
         Load a report and return it in the format expected by MedicalChatEngine.
 
-        Returns: {patient_info, comparison_results, ai_findings, ocr_text}
+        Returns: {patient_info, comparison_results, ai_findings, ocr_text, location_data, nearby_facilities}
         """
         record = self.load_report(report_id)
         if not record:
@@ -144,6 +148,8 @@ class ReportHistoryManager:
             "comparison_results": record.get("comparison_results_full", {}),
             "ai_findings": record.get("ai_findings", {}),
             "ocr_text": record.get("ocr_text", ""),
+            "location_data": record.get("location_data"),
+            "nearby_facilities": record.get("nearby_facilities"),
         }
 
     def delete_report(self, report_id: str) -> bool:

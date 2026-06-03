@@ -39,6 +39,7 @@ class ReportGenerator:
         ai_findings: Dict[str, Any],
         patient_info: Optional[Dict] = None,
         filename: str = "lab_report",
+        nearby_facilities: Optional[Dict] = None,
     ) -> str:
         patient_info = patient_info or {}
         now = datetime.now().strftime("%B %d, %Y at %I:%M %p")
@@ -63,9 +64,9 @@ class ReportGenerator:
 {self._ai_findings_section(ai_findings)}
 {self._patterns_section(ai_findings)}
 {self._recommendations_section(ai_findings)}
+{self._nearby_facilities_section(nearby_facilities)}
 {self._sources_section(ai_findings)}
 {self._disclaimer_section(ai_findings)}
-{self._footer(now)}
 </body>
 </html>"""
         return html
@@ -268,6 +269,69 @@ class ReportGenerator:
   </div>
 </div>"""
 
+    def _nearby_facilities_section(self, facilities: Optional[Dict]) -> str:
+        if not facilities:
+            return ""
+
+        hospitals = facilities.get("hospitals", [])
+        gyms = facilities.get("gyms", [])
+
+        if not hospitals and not gyms:
+            return ""
+
+        hospitals_html = ""
+        if hospitals:
+            hospitals_cards = ""
+            for h in hospitals:
+                rating_str = f" ⭐ {h['rating']}" if h.get("rating") else ""
+                phone_str = f" 📞 {h['phone']}" if h.get("phone") and h["phone"] != "N/A" else ""
+                hospitals_cards += f"""
+                <div class="facility-card hospital-facility">
+                  <div class="facility-header">
+                    <div class="facility-name">🏥 {h['name']}</div>
+                    <span class="facility-distance">{h['distance_km']} km</span>
+                  </div>
+                  <div class="facility-address">{h['address']}</div>
+                  <div class="facility-meta">{rating_str}{phone_str}</div>
+                  <a href="{h['directions_url']}" target="_blank" class="directions-btn hospital-btn">Get Directions ➔</a>
+                </div>"""
+            hospitals_html = f"""
+            <div class="facility-col">
+              <h3 class="facility-subtitle" style="color: #fca5a5;">Recommended Medical Facilities</h3>
+              <div class="facility-list">{hospitals_cards}</div>
+            </div>"""
+
+        gyms_html = ""
+        if gyms:
+            gyms_cards = ""
+            for g in gyms:
+                rating_str = f" ⭐ {g['rating']}" if g.get("rating") else ""
+                phone_str = f" 📞 {g['phone']}" if g.get("phone") and g["phone"] != "N/A" else ""
+                gyms_cards += f"""
+                <div class="facility-card gym-facility">
+                  <div class="facility-header">
+                    <div class="facility-name">🏋️ {g['name']}</div>
+                    <span class="facility-distance">{g['distance_km']} km</span>
+                  </div>
+                  <div class="facility-address">{g['address']}</div>
+                  <div class="facility-meta">{rating_str}{phone_str}</div>
+                  <a href="{g['directions_url']}" target="_blank" class="directions-btn gym-btn">Get Directions ➔</a>
+                </div>"""
+            gyms_html = f"""
+            <div class="facility-col">
+              <h3 class="facility-subtitle" style="color: #86efac;">Recommended Fitness & Wellness Centers</h3>
+              <div class="facility-list">{gyms_cards}</div>
+            </div>"""
+
+        return f"""
+<div class="section">
+  <h2 class="section-title">📍 Nearby Facility Recommendations</h2>
+  <div class="facilities-grid-layout">
+    {hospitals_html}
+    {gyms_html}
+  </div>
+</div>"""
+
     def _sources_section(self, ai_findings: Dict) -> str:
         sources = ai_findings.get("searched_sources", [])
         if not sources:
@@ -290,12 +354,7 @@ class ReportGenerator:
   </div>
 </div>"""
 
-    def _footer(self, now: str) -> str:
-        return f"""
-<div class="report-footer">
-  <span>MedInsight AI · Report generated {now}</span>
-  <span>Powered by Gemini 2.0 Flash + Clinical Reference Database</span>
-</div>"""
+
 
     # ─────────────────────────────────────────────
     # Styles
@@ -315,7 +374,7 @@ class ReportGenerator:
   --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: var(--font); line-height: 1.6; padding: 24px; font-size: 14px; }
+body { background: var(--bg); color: var(--text); font-family: var(--font); line-height: 1.6; padding: 24px 24px 0 24px; font-size: 14px; }
 /* Header */
 .report-header { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #0f0f1a, #1a1a2e); border: 1px solid #2a2a4d; border-radius: var(--radius); padding: 24px 32px; margin-bottom: 20px; }
 .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
@@ -390,10 +449,32 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); line
 .sources-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
 .source-item { font-size: 12px; color: var(--text-muted); padding: 4px 0; word-break: break-all; }
 /* Disclaimer */
-.disclaimer-box { display: flex; gap: 16px; align-items: flex-start; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 20px; font-size: 13px; color: #fca5a5; line-height: 1.7; }
+.disclaimer-box { display: flex; gap: 16px; align-items: flex-start; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 0; font-size: 13px; color: #fca5a5; line-height: 1.7; }
 .disclaimer-icon { font-size: 28px; flex-shrink: 0; }
 /* Footer */
-.report-footer { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 11px; padding: 16px 0; border-top: 1px solid var(--border); }
+
+/* Facilities Recommendation CSS */
+.facilities-grid-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 12px; }
+.facility-col { display: flex; flex-direction: column; gap: 14px; }
+.facility-subtitle { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.facility-list { display: flex; flex-direction: column; gap: 12px; }
+.facility-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 8px; transition: transform 0.2s, border-color 0.2s; }
+.facility-card:hover { transform: translateY(-2px); }
+.hospital-facility { border-left: 4px solid #ef4444; }
+.hospital-facility:hover { border-color: #ef4444; }
+.gym-facility { border-left: 4px solid #22c55e; }
+.gym-facility:hover { border-color: #22c55e; }
+.facility-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.facility-name { font-weight: 700; color: white; font-size: 14px; }
+.facility-distance { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 2px 8px; font-size: 11px; font-weight: 600; color: var(--text); flex-shrink: 0; }
+.facility-address { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+.facility-meta { font-size: 11px; color: var(--text-muted); display: flex; gap: 10px; }
+.directions-btn { display: inline-block; text-align: center; text-decoration: none; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; margin-top: 4px; transition: background 0.2s; }
+.hospital-btn { background: rgba(239, 68, 68, 0.1); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.25); }
+.hospital-btn:hover { background: rgba(239, 68, 68, 0.2); }
+.gym-btn { background: rgba(34, 197, 94, 0.1); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.25); }
+.gym-btn:hover { background: rgba(34, 197, 94, 0.2); }
+
 @media (max-width: 700px) {
   .executive-summary { flex-direction: column; }
   .rec-grid { grid-template-columns: 1fr; }

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>MedInsight Geolocation Component</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #E2E8F0;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            padding: 12px 18px;
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 14px;
+            flex-shrink: 0;
+        }
+
+        .status-dot.requesting {
+            background-color: #3B82F6;
+            box-shadow: 0 0 10px #3B82F6;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        .status-dot.success-gps {
+            background-color: #10B981;
+            box-shadow: 0 0 10px #10B981;
+        }
+
+        .status-dot.success-ip {
+            background-color: #F59E0B;
+            box-shadow: 0 0 10px #F59E0B;
+        }
+
+        .status-dot.error {
+            background-color: #EF4444;
+            box-shadow: 0 0 10px #EF4444;
+        }
+
+        .message-content {
+            font-size: 13px;
+            font-weight: 500;
+            line-height: 1.4;
+            color: #94A3B8;
+        }
+
+        .message-content strong {
+            color: #F8FAFC;
+        }
+
+        .details {
+            font-size: 11px;
+            color: #64748B;
+            margin-top: 2px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.6; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.6; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="widget-container">
+        <div class="status-dot requesting" id="status-indicator"></div>
+        <div>
+            <div class="message-content" id="status-text">Requesting browser location permission...</div>
+            <div class="details" id="status-details">Please allow location access if prompted by your browser.</div>
+        </div>
+    </div>
+
+    <script>
+        // Set component value in Streamlit
+        function setStreamlitValue(val) {
+            window.parent.postMessage({
+                isStreamlitMessage: true,
+                type: "streamlit:setComponentValue",
+                value: val
+            }, "*");
+        }
+
+        // Send height to parent page so there is no scrollbar
+        function setFrameHeight() {
+            const container = document.getElementById("widget-container");
+            const height = container.offsetHeight + 10;
+            window.parent.postMessage({
+                isStreamlitMessage: true,
+                type: "streamlit:setFrameHeight",
+                height: height
+            }, "*");
+        }
+
+        // Initial setup and height check
+        window.addEventListener("load", () => {
+            setFrameHeight();
+            requestLocation();
+        });
+
+        // Resize observer to dynamic update height if content wraps
+        const resizeObserver = new ResizeObserver(() => {
+            setFrameHeight();
+        });
+        resizeObserver.observe(document.body);
+
+        function requestLocation() {
+            const statusIndicator = document.getElementById("status-indicator");
+            const statusText = document.getElementById("status-text");
+            const statusDetails = document.getElementById("status-details");
+
+            if (!navigator.geolocation) {
+                fallbackToIP("Geolocation not supported by browser");
+                return;
+            }
+
+            const options = {
+                enableHighAccuracy: true,
+                timeout: 7000,
+                maximumAge: 0
+            };
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    // Update UI
+                    statusIndicator.className = "status-dot success-gps";
+                    statusText.innerHTML = "Location acquired successfully via <strong>GPS</strong>";
+                    statusDetails.innerText = `Coordinates: ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+
+                    // Send back to Streamlit
+                    setStreamlitValue({
+                        status: "success",
+                        source: "gps",
+                        latitude: lat,
+                        longitude: lon
+                    });
+                },
+                (error) => {
+                    let errMsg = "GPS permission denied";
+                    if (error.code === error.TIMEOUT) {
+                        errMsg = "GPS request timed out";
+                    } else if (error.code === error.POSITION_UNAVAILABLE) {
+                        errMsg = "GPS position unavailable";
+                    }
+                    console.warn(`${errMsg}. Falling back to IP Geolocation.`);
+                    fallbackToIP(errMsg);
+                },
+                options
+            );
+        }
+
+        function fallbackToIP(reason) {
+            const statusIndicator = document.getElementById("status-indicator");
+            const statusText = document.getElementById("status-text");
+            const statusDetails = document.getElementById("status-details");
+
+            statusText.innerHTML = "GPS unavailable. Fetching location via <strong>IP Address...</strong>";
+            statusDetails.innerText = `Reason: ${reason}`;
+
+            fetch("https://ipapi.co/json/")
+                .then(res => {
+                    if (!res.ok) throw new Error("HTTP error " + res.status);
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.error) throw new Error(data.reason || "IP lookup error");
+
+                    const lat = data.latitude;
+                    const lon = data.longitude;
+                    const city = data.city || "Unknown City";
+                    const country = data.country_name || "Unknown Country";
+                    const zip = data.postal || "";
+
+                    statusIndicator.className = "status-dot success-ip";
+                    statusText.innerHTML = `Location fallback active: <strong>IP Address</strong>`;
+                    statusDetails.innerText = `Detected Region: ${city}, ${country} (${lat.toFixed(3)}, ${lon.toFixed(3)})`;
+
+                    setStreamlitValue({
+                        status: "success",
+                        source: "ip",
+                        latitude: lat,
+                        longitude: lon,
+                        city: city,
+                        zip: zip
+                    });
+                })
+                .catch(err => {
+                    console.error("IP fallback failed:", err);
+                    statusIndicator.className = "status-dot error";
+                    statusText.innerHTML = "<strong>Could not auto-detect location</strong>";
+                    statusDetails.innerText = "Please enter your city/ZIP code manually in the fields below.";
+
+                    setStreamlitValue({
+                        status: "error",
+                        error: "GPS and IP lookup failed: " + err.message
+                    });
+                });
+        }
+    </script>
+</body>
+</html>
